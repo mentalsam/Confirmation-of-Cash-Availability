@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>現金有り高の確認</title>
+  <style>
+    body {
+      font-family: 'Arial', 'Hiragino Sans', 'Meiryo', sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      padding: 1rem;
+      color: #333;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      border-radius: 16px;
+      padding: 1.25rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .tabs {
+      display: flex;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #e1e1e1;
+    }
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 0.75rem 0;
+      background: #f5f5f5;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .tab.active {
+      background: #4a6fa5;
+      color: white;
+      font-weight: bold;
+    }
+    .safe {
+      background: #f8f9fc;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 1.5rem;
+    }
+    .safe-title {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+      color: #4a6fa5;
+    }
+    .money-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .money-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+    .money-row.active {
+      border-color: #4a6fa5;
+      background: #edf2fa;
+      box-shadow: 0 2px 8px rgba(74, 111, 165, 0.2);
+    }
+    .money-row label {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    .money-row .input-group {
+      display: flex;
+      align-items: center;
+      background: #f5f7fa;
+      border-radius: 6px;
+      padding: 0 0.5rem;
+      border: 1px solid #ddd;
+    }
+    .money-row .input-group.focus {
+      border-color: #4a6fa5;
+      box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);
+    }
+    .money-row input {
+      width: 70px;
+      text-align: right;
+      font-size: 1rem;
+      padding: 0.5rem;
+      border: none;
+      background: transparent;
+      -moz-appearance: textfield; /* Firefox */
+    }
+    .money-row input::-webkit-outer-spin-button,
+    .money-row input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .money-row input:focus {
+      outline: none;
+    }
+    .money-row span {
+      margin-left: 4px;
+      font-size: 0.9rem;
+    }
+    .result {
+      margin-top: 1.5rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-align: center;
+      padding: 1rem;
+      background: #e8f4ff;
+      border-radius: 10px;
+      border-left: 4px solid #4a6fa5;
+    }
+    .total-count {
+      margin-top: 1.5rem;
+      background: #f9fcf6;
+      border-radius: 10px;
+      padding: 1rem;
+      font-size: 1rem;
+      border: 1px solid #e0e9d9;
+    }
+    .total-count-title {
+      font-weight: bold;
+      margin-bottom: 0.75rem;
+      text-align: center;
+      color: #447722;
+    }
+    .total-count-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .total-count-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 1rem;
+      padding: 0.4rem 0;
+      border-bottom: 1px dashed #ddd;
+    }
+    .total-count-row span:nth-child(2),
+    .total-count-row span:nth-child(3) {
+      text-align: right;
+    }
+    .total-count-row span:nth-child(3) {
+      color: #2c7a00;
+      font-weight: bold;
+    }
+    .zero-count {
+      color: #aaa;
+    }
+    .count-header {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 1rem;
+      padding: 0.25rem 0;
+      margin-bottom: 0.5rem;
+      border-bottom: 2px solid #ddd;
+      font-weight: bold;
+      color: #555;
+    }
+    .count-header span:nth-child(2),
+    .count-header span:nth-child(3) {
+      text-align: right;
+    }
+    .safe-section {
+      display: none;
+    }
+    .safe-section.active {
+      display: block;
+      animation: fadeIn 0.3s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 480px) {
+      .container {
+        padding: 1rem;
+        border-radius: 12px;
+      }
+      h2 {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+      }
+      .money-row {
+        padding: 0.6rem 0.75rem;
+      }
+      .money-row label {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>現金有り高の確認</h2>
+    
+    <div class="tabs">
+      <div class="tab active" id="tab-smallsafe">小口</div>
+      <div class="tab" id="tab-counter">カウンター金庫</div>
+    </div>
+    
+    <div class="safe-section active" id="smallsafe-section">
+      <div class="safe">
+        <div class="safe-title">小口金庫</div>
+        <div class="money-list">
+          <div class="money-row"><label>10000円</label><div class="input-group"><input type="number" id="yen10000-a" min="0" value="0"><span>枚</span></div></div>
+          <div class="money-row"><label>5000円</label><div class="input-group"><input type="number" id="yen5000-a" min="0" value="0"><span>枚</span></div></div>
+          <div class="money-row"><label>1000円</label><div class="input-group"><input type="number" id="yen1000-a" min="0" value="0"><span>枚</span></div></div>
+          <div class="money-row"><label>500円</label><div class="input-group"><input type="number" id="yen500-a" min="0" value="0"><span>枚</span></div></div>
+          <div class="money-row"><label>100円</label><div class="input-group"><input type="number" id="yen100-a" min="0" value="0"><span>枚</span></div></div>
+          <div class="money-row"><label>50円</label><div class="input-group"><input type="number" id="yen50-a" min="0" value="0"><span>枚</span></div></div>
+          <div class="money-row"><label>10円</label><div class="input-group"><input type="number" id="yen10-a" min="0" value="0"><span>枚</span></div></div>
+          <div class="money-row"><label>5円</label><div class="input-group"><input type="number" id="yen5-a" min="0" value="0"><span>枚</span></div></div>
+          <div class="money-row"><label>1円</label><div class="input-group"><input type="number" id="yen1-a" min="0" value="0"><span>枚</span></div></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="safe-section" id="counter-section">
+      <div class="safe">
+        <div class="safe-title">カウンター金庫</div>
+        <div class="money-list">
+          <div class="money-row"><label>10000円</label><div class="input-group"><input type="number" id="yen10000-b" min="0" value="0"><span>枚</span></div></div>
+          <div class="money-row"><label>5000円</label><div class="input-group"><input type="number" id="yen5000-b" min="0" value="0"><span>枚</span></div></div>
+          <div class="money-row"><label>1000円</label><div class="input-group"><input type="number" id="yen1000-b" min="0" value="0"><span>枚</span></div></div>
+          <div class="money-row"><label>500円</label><div class="input-group"><input type="number" id="yen500-b" min="0" value="0"><span>枚</span></div></div>
+          <div class="money-row"><label>100円</label><div class="input-group"><input type="number" id="yen100-b" min="0" value="0"><span>枚</span></div></div>
+          <div class="money-row"><label>50円</label><div class="input-group"><input type="number" id="yen50-b" min="0" value="0"><span>枚</span></div></div>
+          <div class="money-row"><label>10円</label><div class="input-group"><input type="number" id="yen10-b" min="0" value="0"><span>枚</span></div></div>
+          <div class="money-row"><label>5円</label><div class="input-group"><input type="number" id="yen5-b" min="0" value="0"><span>枚</span></div></div>
+          <div class="money-row"><label>1円</label><div class="input-group"><input type="number" id="yen1-b" min="0" value="0"><span>枚</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 合計枚数表示セクション -->
+    <div class="total-count" id="totalCountDisplay">
+      <div class="total-count-title">合計枚数と金額</div>
+      <div class="count-header">
+        <span>金種</span>
+        <span>枚数</span>
+        <span>金額</span>
+      </div>
+      <div class="total-count-list" id="totalCountList">
+        <!-- スクリプトで動的に追加 -->
+      </div>
+    </div>
+    
+    <!-- 本日現金残高を一番下に移動 -->
+    <div class="result" id="totalDisplay">合計: ¥0</div>
+  </div>
+
+  <script>
+    const values = {
+      yen10000: 10000,
+      yen5000: 5000,
+      yen1000: 1000,
+      yen500: 500,
+      yen100: 100,
+      yen50: 50,
+      yen10: 10,
+      yen5: 5,
+      yen1: 1,
+    };
+
+    const names = {
+      yen10000: "10000円",
+      yen5000: "5000円",
+      yen1000: "1000円",
+      yen500: "500円",
+      yen100: "100円",
+      yen50: "50円",
+      yen10: "10円",
+      yen5: "5円",
+      yen1: "1円",
+    };
+
+    // 金種のIDを金額の大きい順に並べる配列
+    const sortedIds = [
+      "yen10000", "yen5000", "yen1000", "yen500", 
+      "yen100", "yen50", "yen10", "yen5", "yen1"
+    ];
+
+    function calculateTotal() {
+      let total = 0;
+      let totalCountHTML = "";
+      
+      // 各金種の合計枚数を保持するオブジェクト
+      let totalCounts = {};
+      
+      // 初期化
+      for (const id in values) {
+        totalCounts[id] = 0;
+      }
+
+      // 小口の計算と枚数カウント
+      for (const id in values) {
+        const num = parseInt(document.getElementById(`${id}-a`).value) || 0;
+        totalCounts[id] += num;
+        total += num * values[id];
+      }
+
+      // カウンター金庫の計算と枚数カウント
+      for (const id in values) {
+        const num = parseInt(document.getElementById(`${id}-b`).value) || 0;
+        totalCounts[id] += num;
+        total += num * values[id];
+      }
+
+      // 合計枚数と金額のHTML作成（金額の大きい順に表示）
+      for (const id of sortedIds) {
+        const count = totalCounts[id];
+        const subtotal = count * values[id];
+        
+        // 0枚の場合はクラスを追加して色を変える
+        const zeroClass = count === 0 ? 'zero-count' : '';
+        
+        totalCountHTML += `
+          <div class="total-count-row ${zeroClass}">
+            <span>${names[id]}</span>
+            <span>${count}枚</span>
+            <span>¥${subtotal.toLocaleString()}</span>
+          </div>
+        `;
+      }
+
+      // HTMLに反映
+      document.getElementById("totalDisplay").innerText = `本日現金残高: ¥${total.toLocaleString()}`;
+      document.getElementById("totalCountList").innerHTML = totalCountHTML;
+    }
+
+    window.onload = () => {
+      // タブ切り替え機能
+      const tabSmallsafe = document.getElementById('tab-smallsafe');
+      const tabCounter = document.getElementById('tab-counter');
+      const smallsafeSection = document.getElementById('smallsafe-section');
+      const counterSection = document.getElementById('counter-section');
+      
+      tabSmallsafe.addEventListener('click', () => {
+        tabSmallsafe.classList.add('active');
+        tabCounter.classList.remove('active');
+        smallsafeSection.classList.add('active');
+        counterSection.classList.remove('active');
+      });
+      
+      tabCounter.addEventListener('click', () => {
+        tabCounter.classList.add('active');
+        tabSmallsafe.classList.remove('active');
+        counterSection.classList.add('active');
+        smallsafeSection.classList.remove('active');
+      });
+      
+      // 入力フィールドにフォーカス/アクティブ効果を追加
+      const allInputs = document.querySelectorAll('input[type="number"]');
+      
+      allInputs.forEach(input => {
+        const row = input.closest('.money-row');
+        const inputGroup = input.closest('.input-group');
+        
+        input.addEventListener('focus', () => {
+          // 現在フォーカスされているフィールドをハイライト
+          document.querySelectorAll('.money-row').forEach(r => r.classList.remove('active'));
+          document.querySelectorAll('.input-group').forEach(g => g.classList.remove('focus'));
+          
+          row.classList.add('active');
+          inputGroup.classList.add('focus');
+          
+          // モバイルでの表示を改善するため、フォーカス時に選択
+          input.select();
+        });
+        
+        // 入力時のイベント
+        input.addEventListener("input", () => {
+          calculateTotal();
+        });
+      });
+      
+      // タッチデバイス用の改善
+      document.querySelectorAll('.money-row').forEach(row => {
+        row.addEventListener('touchstart', () => {
+          const input = row.querySelector('input');
+          if (input) {
+            input.focus();
+          }
+        });
+      });
+      
+      // 初期計算実行
+      calculateTotal();
+    };
+  </script>
+</body>
+</html>
