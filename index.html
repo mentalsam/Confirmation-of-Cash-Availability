@@ -185,6 +185,32 @@
       display: block;
       animation: fadeIn 0.3s;
     }
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      background: #4a6fa5;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    button:hover {
+      background: #3a5a8c;
+    }
+    button.clear-all {
+      background: #d9534f;
+      margin-top: 1rem;
+      width: 100%;
+    }
+    button.clear-all:hover {
+      background: #c9302c;
+    }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -230,6 +256,9 @@
           <div class="money-row"><label>5円</label><div class="input-group"><input type="number" id="yen5-a" min="0" value="0"><span>枚</span></div></div>
           <div class="money-row"><label>1円</label><div class="input-group"><input type="number" id="yen1-a" min="0" value="0"><span>枚</span></div></div>
         </div>
+        <div class="button-group">
+          <button id="clear-smallsafe">小口をクリア</button>
+        </div>
       </div>
     </div>
     
@@ -247,6 +276,9 @@
           <div class="money-row"><label>5円</label><div class="input-group"><input type="number" id="yen5-b" min="0" value="0"><span>枚</span></div></div>
           <div class="money-row"><label>1円</label><div class="input-group"><input type="number" id="yen1-b" min="0" value="0"><span>枚</span></div></div>
         </div>
+        <div class="button-group">
+          <button id="clear-counter">カウンターをクリア</button>
+        </div>
       </div>
     </div>
 
@@ -262,6 +294,9 @@
         <!-- スクリプトで動的に追加 -->
       </div>
     </div>
+    
+    <!-- 全クリアボタン -->
+    <button class="clear-all" id="clear-all">すべてクリア</button>
     
     <!-- 本日現金残高を一番下に移動 -->
     <div class="result" id="totalDisplay">合計: ¥0</div>
@@ -297,6 +332,54 @@
       "yen10000", "yen5000", "yen1000", "yen500", 
       "yen100", "yen50", "yen10", "yen5", "yen1"
     ];
+
+    // データを保存する関数
+    function saveData() {
+      const data = {};
+      // 小口の値を保存
+      for (const id in values) {
+        data[`${id}-a`] = document.getElementById(`${id}-a`).value;
+      }
+      // カウンター金庫の値を保存
+      for (const id in values) {
+        data[`${id}-b`] = document.getElementById(`${id}-b`).value;
+      }
+      localStorage.setItem('moneyCalculatorData', JSON.stringify(data));
+    }
+
+    // データを読み込む関数
+    function loadData() {
+      const savedData = localStorage.getItem('moneyCalculatorData');
+      if (savedData) {
+        const data = JSON.parse(savedData);
+        // 小口の値を読み込み
+        for (const id in values) {
+          const input = document.getElementById(`${id}-a`);
+          if (input && data[`${id}-a`] !== undefined) {
+            input.value = data[`${id}-a`];
+          }
+        }
+        // カウンター金庫の値を読み込み
+        for (const id in values) {
+          const input = document.getElementById(`${id}-b`);
+          if (input && data[`${id}-b`] !== undefined) {
+            input.value = data[`${id}-b`];
+          }
+        }
+      }
+    }
+
+    // クリア関数
+    function clearInputs(prefix) {
+      for (const id in values) {
+        const input = document.getElementById(`${id}-${prefix}`);
+        if (input) {
+          input.value = 0;
+        }
+      }
+      calculateTotal();
+      saveData();
+    }
 
     function calculateTotal() {
       let total = 0;
@@ -344,9 +427,15 @@
       // HTMLに反映
       document.getElementById("totalDisplay").innerText = `本日現金残高: ¥${total.toLocaleString()}`;
       document.getElementById("totalCountList").innerHTML = totalCountHTML;
+      
+      // データを保存
+      saveData();
     }
 
     window.onload = () => {
+      // 保存されたデータを読み込む
+      loadData();
+      
       // タブ切り替え機能
       const tabSmallsafe = document.getElementById('tab-smallsafe');
       const tabCounter = document.getElementById('tab-counter');
@@ -400,6 +489,20 @@
             input.focus();
           }
         });
+      });
+      
+      // クリアボタンのイベント
+      document.getElementById('clear-smallsafe').addEventListener('click', () => {
+        clearInputs('a');
+      });
+      
+      document.getElementById('clear-counter').addEventListener('click', () => {
+        clearInputs('b');
+      });
+      
+      document.getElementById('clear-all').addEventListener('click', () => {
+        clearInputs('a');
+        clearInputs('b');
       });
       
       // 初期計算実行
