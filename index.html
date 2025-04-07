@@ -80,9 +80,10 @@
       background: #edf2fa;
       box-shadow: 0 2px 8px rgba(74, 111, 165, 0.2);
     }
-    .money-row label {
+    .money-label {
       font-size: 1rem;
       font-weight: 500;
+      pointer-events: none; /* 金額部分のクリックを無効化 */
     }
     .money-row .input-group {
       display: flex;
@@ -256,7 +257,7 @@
       .money-row {
         padding: 0.6rem 0.75rem;
       }
-      .money-row label {
+      .money-label {
         font-size: 0.95rem;
       }
       /* スマホでのタップしやすさ改善 */
@@ -281,7 +282,7 @@
         <div class="safe-title">小口金庫</div>
         <div class="money-list">
           <div class="money-row">
-            <label>10000円</label>
+            <div class="money-label">10000円</div>
             <div class="input-group">
               <div class="btn-count btn-minus" data-input="yen10000-a">－</div>
               <input type="number" id="yen10000-a" min="0" value="0">
@@ -290,7 +291,7 @@
             </div>
           </div>
           <div class="money-row">
-            <label>5000円</label>
+            <div class="money-label">5000円</div>
             <div class="input-group">
               <div class="btn-count btn-minus" data-input="yen5000-a">－</div>
               <input type="number" id="yen5000-a" min="0" value="0">
@@ -299,7 +300,7 @@
             </div>
           </div>
           <div class="money-row">
-            <label>1000円</label>
+            <div class="money-label">1000円</div>
             <div class="input-group">
               <div class="btn-count btn-minus" data-input="yen1000-a">－</div>
               <input type="number" id="yen1000-a" min="0" value="0">
@@ -308,7 +309,7 @@
             </div>
           </div>
           <div class="money-row">
-            <label>500円</label>
+            <div class="money-label">500円</div>
             <div class="input-group">
               <div class="btn-count btn-minus" data-input="yen500-a">－</div>
               <input type="number" id="yen500-a" min="0" value="0">
@@ -317,7 +318,7 @@
             </div>
           </div>
           <div class="money-row">
-            <label>100円</label>
+            <div class="money-label">100円</div>
             <div class="input-group">
               <div class="btn-count btn-minus" data-input="yen100-a">－</div>
               <input type="number" id="yen100-a" min="0" value="0">
@@ -326,7 +327,7 @@
             </div>
           </div>
           <div class="money-row">
-            <label>50円</label>
+            <div class="money-label">50円</div>
             <div class="input-group">
               <div class="btn-count btn-minus" data-input="yen50-a">－</div>
               <input type="number" id="yen50-a" min="0" value="0">
@@ -335,7 +336,7 @@
             </div>
           </div>
           <div class="money-row">
-            <label>10円</label>
+            <div class="money-label">10円</div>
             <div class="input-group">
               <div class="btn-count btn-minus" data-input="yen10-a">－</div>
               <input type="number" id="yen10-a" min="0" value="0">
@@ -344,7 +345,7 @@
             </div>
           </div>
           <div class="money-row">
-            <label>5円</label>
+            <div class="money-label">5円</div>
             <div class="input-group">
               <div class="btn-count btn-minus" data-input="yen5-a">－</div>
               <input type="number" id="yen5-a" min="0" value="0">
@@ -353,7 +354,7 @@
             </div>
           </div>
           <div class="money-row">
-            <label>1円</label>
+            <div class="money-label">1円</div>
             <div class="input-group">
               <div class="btn-count btn-minus" data-input="yen1-a">－</div>
               <input type="number" id="yen1-a" min="0" value="0">
@@ -373,7 +374,7 @@
         <div class="safe-title">カウンター金庫</div>
         <div class="money-list">
           <div class="money-row">
-            <label>10000円</label>
+            <div class="money-label">10000円</div>
             <div class="input-group">
               <div class="btn-count btn-minus" data-input="yen10000-b">－</div>
               <input type="number" id="yen10000-b" min="0" value="0">
@@ -382,7 +383,7 @@
             </div>
           </div>
           <div class="money-row">
-            <label>5000円</label>
+            <div class="money-label">5000円</div>
             <div class="input-group">
               <div class="btn-count btn-minus" data-input="yen5000-b">－</div>
               <input type="number" id="yen5000-b" min="0" value="0">
@@ -391,7 +392,7 @@
             </div>
           </div>
           <div class="money-row">
-            <label>1000円</label>
+            <div class="money-label">1000円</div>
             <div class="input-group">
               <div class="btn-count btn-minus" data-input="yen1000-b">－</div>
               <input type="number" id="yen1000-b" min="0" value="0">
@@ -400,7 +401,7 @@
             </div>
           </div>
           <div class="money-row">
-            <label>500円</label>
+            <div class="money-label">500円</div>
             <div class="input-group">
               <div class="btn-count btn-minus" data-input="yen500-b">－</div>
               <input type="number" id="yen500-b" min="0" value="0">
@@ -409,7 +410,7 @@
             </div>
           </div>
           <div class="money-row">
-            <label>100円</label>
+            <div class="money-label">100円</div>
             <div class="input-group">
               <div class="btn-count btn-minus" data-input="yen100-b">－</div>
               <input type="number" id="yen100-b" min="0" value="0">
@@ -418,7 +419,7 @@
             </div>
           </div>
           <div class="money-row">
-            <label>50円</label>
+            <div class="money-label">50円</div>
             <div class="input-group">
               <div class="btn-count btn-minus" data-input="yen50-b">－</div>
               <input type="number" id="yen50-b" min="0" value="0">
@@ -427,7 +428,7 @@
             </div>
           </div>
           <div class="money-row">
-            <label>10円</label>
+            <div class="money-label">10円</div>
             <div class="input-group">
               <div class="btn-count btn-minus" data-input="yen10-b">－</div>
               <input type="number" id="yen10-b" min="0" value="0">
@@ -436,7 +437,7 @@
             </div>
           </div>
           <div class="money-row">
-            <label>5円</label>
+            <div class="money-label">5円</div>
             <div class="input-group">
               <div class="btn-count btn-minus" data-input="yen5-b">－</div>
               <input type="number" id="yen5-b" min="0" value="0">
@@ -445,7 +446,7 @@
             </div>
           </div>
           <div class="money-row">
-            <label>1円</label>
+            <div class="money-label">1円</div>
             <div class="input-group">
               <div class="btn-count btn-minus" data-input="yen1-b">－</div>
               <input type="number" id="yen1-b" min="0" value="0">
@@ -699,15 +700,8 @@
         });
       });
       
-      // タッチデバイス用の改善
-      document.querySelectorAll('.money-row').forEach(row => {
-        row.addEventListener('touchstart', () => {
-          const input = row.querySelector('input');
-          if (input) {
-            input.focus();
-          }
-        });
-      });
+      // タッチデバイス用の改善 - 金額部分のクリックを無効化し、入力フィールド部分のみ反応するように変更
+      // 以前の行全体をタップする処理を削除
       
       // クリアボタンのイベント
       document.getElementById('clear-smallsafe').addEventListener('click', () => {
