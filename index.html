@@ -134,18 +134,38 @@
       color: #555;
       transition: all 0.2s;
       user-select: none;
+      border-radius: 4px;
+      margin: 0 2px;
     }
     .btn-count:hover {
       background: #d8d8d8;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     .btn-count:active {
       background: #c8c8c8;
+      transform: translateY(1px);
+      box-shadow: none;
     }
     .btn-minus {
-      border-right: 1px solid #ddd;
+      background: #ffebee;
+      color: #e53935;
+    }
+    .btn-minus:hover {
+      background: #ffcdd2;
+    }
+    .btn-minus:active {
+      background: #ef9a9a;
     }
     .btn-plus {
-      border-left: 1px solid #ddd;
+      background: #e8f5e9;
+      color: #43a047;
+    }
+    .btn-plus:hover {
+      background: #c8e6c9;
+    }
+    .btn-plus:active {
+      background: #a5d6a7;
     }
     .result {
       margin-top: 1.5rem;
@@ -240,6 +260,13 @@
     }
     button.clear-all:hover {
       background: #c9302c;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 2rem;
+      padding: 1rem 0;
+      font-size: 0.8rem;
+      color: #777;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
@@ -479,6 +506,11 @@
     
     <!-- 本日現金残高を一番下に移動 -->
     <div class="result" id="totalDisplay">合計: ¥0</div>
+    
+    <!-- フッター -->
+    <div class="footer">
+      © 2025 Matsuda rights reserved.
+    </div>
   </div>
 
   <script>
