@@ -89,7 +89,7 @@
       align-items: center;
       background: #f5f7fa;
       border-radius: 6px;
-      padding: 0 0.5rem;
+      overflow: hidden;
       border: 1px solid #ddd;
     }
     .money-row .input-group.focus {
@@ -97,7 +97,7 @@
       box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);
     }
     .money-row input {
-      width: 70px;
+      width: 60px;
       text-align: right;
       font-size: 1rem;
       padding: 0.5rem;
@@ -116,6 +116,35 @@
     .money-row span {
       margin-left: 4px;
       font-size: 0.9rem;
+      padding-right: 8px;
+    }
+    /* 新しく追加: +-ボタンのスタイル */
+    .btn-count {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e8e8e8;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #555;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .btn-count:hover {
+      background: #d8d8d8;
+    }
+    .btn-count:active {
+      background: #c8c8c8;
+    }
+    .btn-minus {
+      border-right: 1px solid #ddd;
+    }
+    .btn-plus {
+      border-left: 1px solid #ddd;
     }
     .result {
       margin-top: 1.5rem;
@@ -230,6 +259,11 @@
       .money-row label {
         font-size: 0.95rem;
       }
+      /* スマホでのタップしやすさ改善 */
+      .btn-count {
+        width: 40px;
+        height: 40px;
+      }
     }
   </style>
 </head>
@@ -246,15 +280,87 @@
       <div class="safe">
         <div class="safe-title">小口金庫</div>
         <div class="money-list">
-          <div class="money-row"><label>10000円</label><div class="input-group"><input type="number" id="yen10000-a" min="0" value="0"><span>枚</span></div></div>
-          <div class="money-row"><label>5000円</label><div class="input-group"><input type="number" id="yen5000-a" min="0" value="0"><span>枚</span></div></div>
-          <div class="money-row"><label>1000円</label><div class="input-group"><input type="number" id="yen1000-a" min="0" value="0"><span>枚</span></div></div>
-          <div class="money-row"><label>500円</label><div class="input-group"><input type="number" id="yen500-a" min="0" value="0"><span>枚</span></div></div>
-          <div class="money-row"><label>100円</label><div class="input-group"><input type="number" id="yen100-a" min="0" value="0"><span>枚</span></div></div>
-          <div class="money-row"><label>50円</label><div class="input-group"><input type="number" id="yen50-a" min="0" value="0"><span>枚</span></div></div>
-          <div class="money-row"><label>10円</label><div class="input-group"><input type="number" id="yen10-a" min="0" value="0"><span>枚</span></div></div>
-          <div class="money-row"><label>5円</label><div class="input-group"><input type="number" id="yen5-a" min="0" value="0"><span>枚</span></div></div>
-          <div class="money-row"><label>1円</label><div class="input-group"><input type="number" id="yen1-a" min="0" value="0"><span>枚</span></div></div>
+          <div class="money-row">
+            <label>10000円</label>
+            <div class="input-group">
+              <div class="btn-count btn-minus" data-input="yen10000-a">－</div>
+              <input type="number" id="yen10000-a" min="0" value="0">
+              <span>枚</span>
+              <div class="btn-count btn-plus" data-input="yen10000-a">＋</div>
+            </div>
+          </div>
+          <div class="money-row">
+            <label>5000円</label>
+            <div class="input-group">
+              <div class="btn-count btn-minus" data-input="yen5000-a">－</div>
+              <input type="number" id="yen5000-a" min="0" value="0">
+              <span>枚</span>
+              <div class="btn-count btn-plus" data-input="yen5000-a">＋</div>
+            </div>
+          </div>
+          <div class="money-row">
+            <label>1000円</label>
+            <div class="input-group">
+              <div class="btn-count btn-minus" data-input="yen1000-a">－</div>
+              <input type="number" id="yen1000-a" min="0" value="0">
+              <span>枚</span>
+              <div class="btn-count btn-plus" data-input="yen1000-a">＋</div>
+            </div>
+          </div>
+          <div class="money-row">
+            <label>500円</label>
+            <div class="input-group">
+              <div class="btn-count btn-minus" data-input="yen500-a">－</div>
+              <input type="number" id="yen500-a" min="0" value="0">
+              <span>枚</span>
+              <div class="btn-count btn-plus" data-input="yen500-a">＋</div>
+            </div>
+          </div>
+          <div class="money-row">
+            <label>100円</label>
+            <div class="input-group">
+              <div class="btn-count btn-minus" data-input="yen100-a">－</div>
+              <input type="number" id="yen100-a" min="0" value="0">
+              <span>枚</span>
+              <div class="btn-count btn-plus" data-input="yen100-a">＋</div>
+            </div>
+          </div>
+          <div class="money-row">
+            <label>50円</label>
+            <div class="input-group">
+              <div class="btn-count btn-minus" data-input="yen50-a">－</div>
+              <input type="number" id="yen50-a" min="0" value="0">
+              <span>枚</span>
+              <div class="btn-count btn-plus" data-input="yen50-a">＋</div>
+            </div>
+          </div>
+          <div class="money-row">
+            <label>10円</label>
+            <div class="input-group">
+              <div class="btn-count btn-minus" data-input="yen10-a">－</div>
+              <input type="number" id="yen10-a" min="0" value="0">
+              <span>枚</span>
+              <div class="btn-count btn-plus" data-input="yen10-a">＋</div>
+            </div>
+          </div>
+          <div class="money-row">
+            <label>5円</label>
+            <div class="input-group">
+              <div class="btn-count btn-minus" data-input="yen5-a">－</div>
+              <input type="number" id="yen5-a" min="0" value="0">
+              <span>枚</span>
+              <div class="btn-count btn-plus" data-input="yen5-a">＋</div>
+            </div>
+          </div>
+          <div class="money-row">
+            <label>1円</label>
+            <div class="input-group">
+              <div class="btn-count btn-minus" data-input="yen1-a">－</div>
+              <input type="number" id="yen1-a" min="0" value="0">
+              <span>枚</span>
+              <div class="btn-count btn-plus" data-input="yen1-a">＋</div>
+            </div>
+          </div>
         </div>
         <div class="button-group">
           <button id="clear-smallsafe">小口をクリア</button>
@@ -266,15 +372,87 @@
       <div class="safe">
         <div class="safe-title">カウンター金庫</div>
         <div class="money-list">
-          <div class="money-row"><label>10000円</label><div class="input-group"><input type="number" id="yen10000-b" min="0" value="0"><span>枚</span></div></div>
-          <div class="money-row"><label>5000円</label><div class="input-group"><input type="number" id="yen5000-b" min="0" value="0"><span>枚</span></div></div>
-          <div class="money-row"><label>1000円</label><div class="input-group"><input type="number" id="yen1000-b" min="0" value="0"><span>枚</span></div></div>
-          <div class="money-row"><label>500円</label><div class="input-group"><input type="number" id="yen500-b" min="0" value="0"><span>枚</span></div></div>
-          <div class="money-row"><label>100円</label><div class="input-group"><input type="number" id="yen100-b" min="0" value="0"><span>枚</span></div></div>
-          <div class="money-row"><label>50円</label><div class="input-group"><input type="number" id="yen50-b" min="0" value="0"><span>枚</span></div></div>
-          <div class="money-row"><label>10円</label><div class="input-group"><input type="number" id="yen10-b" min="0" value="0"><span>枚</span></div></div>
-          <div class="money-row"><label>5円</label><div class="input-group"><input type="number" id="yen5-b" min="0" value="0"><span>枚</span></div></div>
-          <div class="money-row"><label>1円</label><div class="input-group"><input type="number" id="yen1-b" min="0" value="0"><span>枚</span></div></div>
+          <div class="money-row">
+            <label>10000円</label>
+            <div class="input-group">
+              <div class="btn-count btn-minus" data-input="yen10000-b">－</div>
+              <input type="number" id="yen10000-b" min="0" value="0">
+              <span>枚</span>
+              <div class="btn-count btn-plus" data-input="yen10000-b">＋</div>
+            </div>
+          </div>
+          <div class="money-row">
+            <label>5000円</label>
+            <div class="input-group">
+              <div class="btn-count btn-minus" data-input="yen5000-b">－</div>
+              <input type="number" id="yen5000-b" min="0" value="0">
+              <span>枚</span>
+              <div class="btn-count btn-plus" data-input="yen5000-b">＋</div>
+            </div>
+          </div>
+          <div class="money-row">
+            <label>1000円</label>
+            <div class="input-group">
+              <div class="btn-count btn-minus" data-input="yen1000-b">－</div>
+              <input type="number" id="yen1000-b" min="0" value="0">
+              <span>枚</span>
+              <div class="btn-count btn-plus" data-input="yen1000-b">＋</div>
+            </div>
+          </div>
+          <div class="money-row">
+            <label>500円</label>
+            <div class="input-group">
+              <div class="btn-count btn-minus" data-input="yen500-b">－</div>
+              <input type="number" id="yen500-b" min="0" value="0">
+              <span>枚</span>
+              <div class="btn-count btn-plus" data-input="yen500-b">＋</div>
+            </div>
+          </div>
+          <div class="money-row">
+            <label>100円</label>
+            <div class="input-group">
+              <div class="btn-count btn-minus" data-input="yen100-b">－</div>
+              <input type="number" id="yen100-b" min="0" value="0">
+              <span>枚</span>
+              <div class="btn-count btn-plus" data-input="yen100-b">＋</div>
+            </div>
+          </div>
+          <div class="money-row">
+            <label>50円</label>
+            <div class="input-group">
+              <div class="btn-count btn-minus" data-input="yen50-b">－</div>
+              <input type="number" id="yen50-b" min="0" value="0">
+              <span>枚</span>
+              <div class="btn-count btn-plus" data-input="yen50-b">＋</div>
+            </div>
+          </div>
+          <div class="money-row">
+            <label>10円</label>
+            <div class="input-group">
+              <div class="btn-count btn-minus" data-input="yen10-b">－</div>
+              <input type="number" id="yen10-b" min="0" value="0">
+              <span>枚</span>
+              <div class="btn-count btn-plus" data-input="yen10-b">＋</div>
+            </div>
+          </div>
+          <div class="money-row">
+            <label>5円</label>
+            <div class="input-group">
+              <div class="btn-count btn-minus" data-input="yen5-b">－</div>
+              <input type="number" id="yen5-b" min="0" value="0">
+              <span>枚</span>
+              <div class="btn-count btn-plus" data-input="yen5-b">＋</div>
+            </div>
+          </div>
+          <div class="money-row">
+            <label>1円</label>
+            <div class="input-group">
+              <div class="btn-count btn-minus" data-input="yen1-b">－</div>
+              <input type="number" id="yen1-b" min="0" value="0">
+              <span>枚</span>
+              <div class="btn-count btn-plus" data-input="yen1-b">＋</div>
+            </div>
+          </div>
         </div>
         <div class="button-group">
           <button id="clear-counter">カウンターをクリア</button>
@@ -381,6 +559,17 @@
       saveData();
     }
 
+    // 枚数を変更する関数（+/-ボタン用）
+    function changeCount(inputId, amount) {
+      const input = document.getElementById(inputId);
+      let value = parseInt(input.value) || 0;
+      value += amount;
+      // 最小値は0に制限
+      value = Math.max(0, value);
+      input.value = value;
+      calculateTotal();
+    }
+
     function calculateTotal() {
       let total = 0;
       let totalCountHTML = "";
@@ -478,6 +667,35 @@
         // 入力時のイベント
         input.addEventListener("input", () => {
           calculateTotal();
+        });
+      });
+      
+      // +/- ボタンのイベント設定
+      document.querySelectorAll('.btn-plus').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const inputId = btn.getAttribute('data-input');
+          changeCount(inputId, 1);
+          // 対応する行とボタンをハイライト
+          const row = btn.closest('.money-row');
+          const inputGroup = btn.closest('.input-group');
+          document.querySelectorAll('.money-row').forEach(r => r.classList.remove('active'));
+          document.querySelectorAll('.input-group').forEach(g => g.classList.remove('focus'));
+          row.classList.add('active');
+          inputGroup.classList.add('focus');
+        });
+      });
+      
+      document.querySelectorAll('.btn-minus').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const inputId = btn.getAttribute('data-input');
+          changeCount(inputId, -1);
+          // 対応する行とボタンをハイライト
+          const row = btn.closest('.money-row');
+          const inputGroup = btn.closest('.input-group');
+          document.querySelectorAll('.money-row').forEach(r => r.classList.remove('active'));
+          document.querySelectorAll('.input-group').forEach(g => g.classList.remove('focus'));
+          row.classList.add('active');
+          inputGroup.classList.add('focus');
         });
       });
       
