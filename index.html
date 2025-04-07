@@ -119,7 +119,7 @@
       font-size: 0.9rem;
       padding-right: 8px;
     }
-    /* 新しく追加: +-ボタンのスタイル */
+    /* +-ボタンのスタイル */
     .btn-count {
       width: 36px;
       height: 36px;
@@ -272,6 +272,142 @@
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    
+    /* 日付記録機能のスタイル追加 */
+    .date-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      background: #f2f7ff;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid #d0e0f7;
+    }
+    
+    .date-display {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    
+    .save-record-btn {
+      background: #4CAF50;
+      padding: 0.5rem 1rem;
+    }
+    
+    .save-record-btn:hover {
+      background: #388E3C;
+    }
+    
+    /* 履歴セクション */
+    .tab-history {
+      flex: 1;
+    }
+    
+    .history-section {
+      display: none;
+    }
+    
+    .history-section.active {
+      display: block;
+      animation: fadeIn 0.3s;
+    }
+    
+    .history-list {
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid #e1e1e1;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+    
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .history-item:hover {
+      background: #f5f9ff;
+    }
+    
+    .history-item.selected {
+      background: #e8f4ff;
+      border-left: 4px solid #4a6fa5;
+    }
+    
+    .history-date {
+      font-weight: bold;
+    }
+    
+    .history-amount {
+      color: #2c7a00;
+    }
+    
+    .history-detail {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f9f9f9;
+      border-radius: 8px;
+      border: 1px solid #eee;
+      display: none;
+    }
+    
+    .history-detail.active {
+      display: block;
+      animation: fadeIn 0.3s;
+    }
+    
+    .no-history {
+      text-align: center;
+      padding: 2rem;
+      color: #777;
+    }
+    
+    .history-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+    
+    .delete-history {
+      background: #f44336;
+    }
+    
+    .delete-history:hover {
+      background: #d32f2f;
+    }
+    
+    .delete-all-history {
+      background: #f44336;
+      margin-top: 1rem;
+      width: 100%;
+    }
+    
+    .delete-all-history:hover {
+      background: #d32f2f;
+    }
+    
+    .note-input {
+      margin-top: 1rem;
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      resize: vertical;
+      min-height: 60px;
+      font-family: inherit;
+    }
+    
+    .note-input:focus {
+      outline: none;
+      border-color: #4a6fa5;
+      box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);
+    }
+    
     @media (max-width: 480px) {
       .container {
         padding: 1rem;
@@ -292,6 +428,10 @@
         width: 40px;
         height: 40px;
       }
+      .date-container {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
     }
   </style>
 </head>
@@ -299,9 +439,16 @@
   <div class="container">
     <h2>現金有り高の確認</h2>
     
+    <!-- 日付表示と記録ボタン -->
+    <div class="date-container">
+      <div class="date-display" id="currentDate">2025年4月7日</div>
+      <button class="save-record-btn" id="saveRecord">この内容を記録する</button>
+    </div>
+    
     <div class="tabs">
       <div class="tab active" id="tab-smallsafe">小口</div>
       <div class="tab" id="tab-counter">カウンター金庫</div>
+      <div class="tab tab-history" id="tab-history">履歴</div>
     </div>
     
     <div class="safe-section active" id="smallsafe-section">
@@ -487,6 +634,24 @@
         </div>
       </div>
     </div>
+    
+    <!-- 履歴セクション -->
+    <div class="safe-section history-section" id="history-section">
+      <div class="safe">
+        <div class="safe-title">記録履歴</div>
+        <div class="history-list" id="historyList">
+          <!-- スクリプトで動的に生成 -->
+        </div>
+        
+        <div class="history-detail" id="historyDetail">
+          <!-- スクリプトで動的に生成 -->
+        </div>
+        
+        <div class="button-group">
+          <button class="delete-all-history" id="deleteAllHistory">全ての履歴を削除</button>
+        </div>
+      </div>
+    </div>
 
     <!-- 合計枚数表示セクション -->
     <div class="total-count" id="totalCountDisplay">
@@ -500,6 +665,9 @@
         <!-- スクリプトで動的に追加 -->
       </div>
     </div>
+    
+    <!-- メモ入力欄 -->
+    <textarea class="note-input" id="noteInput" placeholder="メモを入力（任意）"></textarea>
     
     <!-- 全クリアボタン -->
     <button class="clear-all" id="clear-all">すべてクリア</button>
@@ -544,7 +712,20 @@
       "yen100", "yen50", "yen10", "yen5", "yen1"
     ];
 
-    // データを保存する関数
+    // 現在の日時設定
+    function updateCurrentDate() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
+      const day = now.getDate();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      
+      document.getElementById('currentDate').textContent = `${year}年${month}月${day}日 ${hours}:${minutes}`;
+      return `${year}/${month}/${day} ${hours}:${minutes}`;
+    }
+
+    // データを保存する関数（現在の作業データ）
     function saveData() {
       const data = {};
       // 小口の値を保存
@@ -558,7 +739,7 @@
       localStorage.setItem('moneyCalculatorData', JSON.stringify(data));
     }
 
-    // データを読み込む関数
+    // データを読み込む関数（現在の作業データ）
     function loadData() {
       const savedData = localStorage.getItem('moneyCalculatorData');
       if (savedData) {
@@ -588,6 +769,7 @@
           input.value = 0;
         }
       }
+      document.getElementById('noteInput').value = '';
       calculateTotal();
       saveData();
     }
@@ -603,6 +785,7 @@
       calculateTotal();
     }
 
+    // 合計金額を計算する
     function calculateTotal() {
       let total = 0;
       let totalCountHTML = "";
@@ -652,30 +835,322 @@
       
       // データを保存
       saveData();
+      
+      return {
+        total,
+        totalCounts
+      };
+    }
+    
+    // 現在の記録を保存する
+    function saveCurrentRecord() {
+      // 現在の全データを取得
+      const currentData = {};
+      
+      // 小口の値を取得
+      for (const id in values) {
+        currentData[`${id}-a`] = parseInt(document.getElementById(`${id}-a`).value) || 0;
+      }
+      
+      // カウンター金庫の値を取得
+      for (const id in values) {
+        currentData[`${id}-b`] = parseInt(document.getElementById(`${id}-b`).value) || 0;
+      }
+      
+      // 合計を計算
+      const {total, totalCounts} = calculateTotal();
+      
+      // メモを取得
+      const note = document.getElementById('noteInput').value;
+      
+      // 日時を生成
+      const dateTime = new Date();
+      const dateStr = dateTime.toLocaleString('ja-JP', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      const dateKey = dateTime.getTime().toString(); // ミリ秒タイムスタンプをキーとして使用
+      
+      // 保存するデータ構造
+      const recordData = {
+        id: dateKey,
+        date: dateStr,
+        timestamp: dateTime.getTime(),
+        data: currentData,
+        totalCounts: totalCounts,
+        total: total,
+        note: note
+      };
+      
+      // 既存の記録を取得
+      let history = JSON.parse(localStorage.getItem('moneyCalculatorHistory') || '[]');
+      
+      // 新しい記録を追加
+      history.push(recordData);
+      
+      // 日付の新しい順に並び替え
+      history.sort((a, b) => b.timestamp - a.timestamp);
+      
+      // 保存
+      localStorage.setItem('moneyCalculatorHistory', JSON.stringify(history));
+      
+      // 履歴リストを更新
+      updateHistoryList();
+      
+      return dateStr;
+    }
+    
+    // 履歴リストを更新する
+    function updateHistoryList() {
+      const historyList = document.getElementById('historyList');
+      
+      // 履歴データを取得
+      const history = JSON.parse(localStorage.getItem('moneyCalculatorHistory') || '[]');
+      
+      // 履歴がない場合
+      if (history.length === 0) {
+        historyList.innerHTML = '<div class="no-history">記録された履歴はありません</div>';
+        return;
+      }
+      
+      // 履歴リストを生成
+      let historyHTML = '';
+      history.forEach(record => {
+        historyHTML += `
+          <div class="history-item" data-id="${record.id}">
+            <div class="history-date">${record.date}</div>
+            <div class="history-amount">¥${record.total.toLocaleString()}</div>
+          </div>
+        `;
+      });
+      
+      historyList.innerHTML = historyHTML;
+      
+      // 履歴アイテムにクリックイベントを追加
+      document.querySelectorAll('.history-item').forEach(item => {
+        item.addEventListener('click', function() {
+          const recordId = this.getAttribute('data-id');
+          showHistoryDetail(recordId);
+          
+          // 選択状態のスタイル
+          document.querySelectorAll('.history-item').forEach(i => i.classList.remove('selected'));
+          this.classList.add('selected');
+        });
+      });
+    }
+    
+    // 履歴の詳細を表示
+    function showHistoryDetail(recordId) {
+      const historyDetail = document.getElementById('historyDetail');
+      
+      // 履歴データを取得
+      const history = JSON.parse(localStorage.getItem('moneyCalculatorHistory') || '[]');
+      const record = history.find(r => r.id === recordId);
+      
+      if (!record) {
+        historyDetail.style.display = 'none';
+        return;
+      }
+      
+      // 詳細表示用のHTMLを生成
+      let detailHTML = `
+        <h3>${record.date}の記録</h3>
+        <div class="total-count">
+          <div class="total-count-title">金種別枚数</div>
+          <div class="count-header">
+            <span>金種</span>
+            <span>枚数</span>
+            <span>金額</span>
+          </div>
+          <div class="total-count-list">
+      `;
+      
+      // 金種ごとの枚数を表示
+      for (const id of sortedIds) {
+        const count = record.totalCounts[id] || 0;
+        const subtotal = count * values[id];
+        
+        // 0枚の場合はクラスを追加して色を変える
+        const zeroClass = count === 0 ? 'zero-count' : '';
+        
+        detailHTML += `
+          <div class="total-count-row ${zeroClass}">
+            <span>${names[id]}</span>
+            <span>${count}枚</span>
+            <span>¥${subtotal.toLocaleString()}</span>
+          </div>
+        `;
+      }
+      
+      detailHTML += `
+          </div>
+        </div>
+      `;
+      
+      // メモがあれば表示
+      if (record.note && record.note.trim() !== '') {
+        detailHTML += `
+          <div style="margin-top: 1rem; padding: 1rem; background: #f5f5f5; border-radius: 8px;">
+            <div style="font-weight: bold; margin-bottom: 0.5rem;">メモ:</div>
+            <div>${record.note.replace(/\n/g, '<br>')}</div>
+          </div>
+        `;
+      }
+      
+      detailHTML += `
+        <div class="result" style="margin-top: 1rem;">
+          合計: ¥${record.total.toLocaleString()}
+        </div>
+        
+        <div class="history-actions">
+          <button class="delete-history" data-id="${record.id}">この記録を削除</button>
+          <button class="load-history" data-id="${record.id}">この内容を読み込む</button>
+        </div>
+      `;
+      
+      historyDetail.innerHTML = detailHTML;
+      historyDetail.classList.add('active');
+      
+      // 削除ボタンにイベントを追加
+      document.querySelector('.delete-history').addEventListener('click', function() {
+        const id = this.getAttribute('data-id');
+        deleteHistoryRecord(id);
+      });
+      
+      // 読み込みボタンにイベントを追加
+      document.querySelector('.load-history').addEventListener('click', function() {
+        const id = this.getAttribute('data-id');
+        loadHistoryRecord(id);
+      });
+    }
+    
+    // 履歴データを削除
+    function deleteHistoryRecord(recordId) {
+      if (!confirm('この記録を削除しますか？')) {
+        return;
+      }
+      
+      // 履歴データを取得
+      let history = JSON.parse(localStorage.getItem('moneyCalculatorHistory') || '[]');
+      
+      // 対象の記録を削除
+      history = history.filter(r => r.id !== recordId);
+      
+      // 更新した履歴を保存
+      localStorage.setItem('moneyCalculatorHistory', JSON.stringify(history));
+      
+      // 履歴リストを更新
+      updateHistoryList();
+      
+      // 詳細表示を閉じる
+      document.getElementById('historyDetail').classList.remove('active');
+    }
+    
+    // 全ての履歴を削除
+    function deleteAllHistory() {
+      if (!confirm('全ての履歴を削除しますか？この操作は元に戻せません。')) {
+        return;
+      }
+      
+      // 履歴データを削除
+      localStorage.removeItem('moneyCalculatorHistory');
+      
+      // 履歴リストを更新
+      updateHistoryList();
+      
+      // 詳細表示を閉じる
+      document.getElementById('historyDetail').classList.remove('active');
+    }
+    
+    // 履歴の内容を現在のフォームに読み込む
+    function loadHistoryRecord(recordId) {
+      if (!confirm('この記録の内容を現在のフォームに読み込みますか？\n現在の入力内容は上書きされます。')) {
+        return;
+      }
+      
+      // 履歴データを取得
+      const history = JSON.parse(localStorage.getItem('moneyCalculatorHistory') || '[]');
+      const record = history.find(r => r.id === recordId);
+      
+      if (!record) {
+        return;
+      }
+      
+      // 小口の値を設定
+      for (const id in values) {
+        const input = document.getElementById(`${id}-a`);
+        if (input) {
+          input.value = record.data[`${id}-a`] || 0;
+        }
+      }
+      
+      // カウンター金庫の値を設定
+      for (const id in values) {
+        const input = document.getElementById(`${id}-b`);
+        if (input) {
+          input.value = record.data[`${id}-b`] || 0;
+        }
+      }
+      
+      // メモを設定
+      document.getElementById('noteInput').value = record.note || '';
+      
+      // 合計を再計算
+      calculateTotal();
+      
+      // 表示を小口またはカウンターに切り替え
+      document.getElementById('tab-smallsafe').click();
+      
+      // データを保存
+      saveData();
     }
 
     window.onload = () => {
+      // 日付を更新
+      updateCurrentDate();
+      
       // 保存されたデータを読み込む
       loadData();
+      
+      // 履歴リストを更新
+      updateHistoryList();
       
       // タブ切り替え機能
       const tabSmallsafe = document.getElementById('tab-smallsafe');
       const tabCounter = document.getElementById('tab-counter');
+      const tabHistory = document.getElementById('tab-history');
       const smallsafeSection = document.getElementById('smallsafe-section');
       const counterSection = document.getElementById('counter-section');
+      const historySection = document.getElementById('history-section');
       
       tabSmallsafe.addEventListener('click', () => {
         tabSmallsafe.classList.add('active');
         tabCounter.classList.remove('active');
+        tabHistory.classList.remove('active');
         smallsafeSection.classList.add('active');
         counterSection.classList.remove('active');
+        historySection.classList.remove('active');
       });
       
       tabCounter.addEventListener('click', () => {
         tabCounter.classList.add('active');
         tabSmallsafe.classList.remove('active');
+        tabHistory.classList.remove('active');
         counterSection.classList.add('active');
         smallsafeSection.classList.remove('active');
+        historySection.classList.remove('active');
+      });
+      
+      tabHistory.addEventListener('click', () => {
+        tabHistory.classList.add('active');
+        tabSmallsafe.classList.remove('active');
+        tabCounter.classList.remove('active');
+        historySection.classList.add('active');
+        smallsafeSection.classList.remove('active');
+        counterSection.classList.remove('active');
       });
       
       // 入力フィールドにフォーカス/アクティブ効果を追加
@@ -732,9 +1207,6 @@
         });
       });
       
-      // タッチデバイス用の改善 - 金額部分のクリックを無効化し、入力フィールド部分のみ反応するように変更
-      // 以前の行全体をタップする処理を削除
-      
       // クリアボタンのイベント
       document.getElementById('clear-smallsafe').addEventListener('click', () => {
         clearInputs('a');
@@ -749,9 +1221,19 @@
         clearInputs('b');
       });
       
+      // 記録を保存するボタンのイベント
+      document.getElementById('saveRecord').addEventListener('click', () => {
+        const dateStr = saveCurrentRecord();
+        alert(`${dateStr}の記録を保存しました。`);
+      });
+      
+      // 全履歴削除ボタンのイベント
+      document.getElementById('deleteAllHistory').addEventListener('click', deleteAllHistory);
+      
       // 初期計算実行
       calculateTotal();
     };
   </script>
 </body>
 </html>
+      
